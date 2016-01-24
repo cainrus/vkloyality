@@ -1,0 +1,33 @@
+{
+  "appName": {
+    "message": "СРМ список"
+  },
+  "appDesc": {
+    "message": "Свободный рынок миниатюр - список мошенников и добросовестных пользователей"
+  },
+  "groupName": {
+    "message": "Свободный рынок миниатюр"
+  },
+
+  "notification": {
+    "message": "Внимание, пользователь занесен в $list$ группы $groupName$",
+    "placeholders": {
+      "list": {
+        "content": "$1",
+        "example": "белый список."
+      },
+      "groupName": {
+        "content": "$2",
+        "example": "Свободный Рынок Миниатюр."
+      }
+    }
+  },
+
+  "blacklist": {
+    "message": "черный список"
+
+  },
+  "whitelist": {
+    "message": "белый список"
+  }
+}

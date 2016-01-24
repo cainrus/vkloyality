@@ -1,0 +1,20 @@
+{
+  "name": "vklist",
+  "version": "1.1.1",
+  "description": "vk common whitelist & blacklist",
+  "main": "gulp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-wrapper": "^1.0.0",
+    "gulp-zip": "^3.0.2",
+    "jquery": "^2.2.0",
+    "jquery-latest": "^1.9.0"
+  }
+}
