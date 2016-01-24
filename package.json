@@ -1,10 +1,11 @@
 {
   "name": "vklist",
-  "version": "1.2",
+  "version": "1.2.0",
   "description": "vk common whitelist & blacklist",
   "main": "gulp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "$(npm bin)/gulp build"
   },
   "author": "",
   "license": "ISC",
