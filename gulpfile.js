@@ -37,8 +37,8 @@
         gulp.watch(['./src/**/*.js'], ['js']);
     });
 
-    gulp.task('zip', function(){
-        return gulp.src('extension/*')
+    gulp.task('build', ['js'], function(){
+        return gulp.src('extension/**/*')
             .pipe(zip('extension.zip'))
             .pipe(gulp.dest('./build'));
     });
