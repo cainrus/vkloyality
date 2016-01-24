@@ -1,5 +1,4 @@
-extension/build
 node_modules
 .idea
 tmp/*
-extension.zip
+build/
