@@ -134,9 +134,9 @@ User.prototype.checkBlacklist = function () {
             }).then(function (ids) {
                 return this.getUID(ids);
             }.bind(this)).then(function (users) {
-                return users.some(function (user) {
-                    resolve(user.uid == uid);
-                })
+                return resolve(users.some(function (user) {
+                    return user.uid == uid;
+                }));
             }.bind(this));
     }.bind(this));
 

@@ -9,7 +9,7 @@ setTimeout(function () {
 
     banner = new Banner({});
     banner.show = function (mode) {
-        bridge.request('i18n', ['notification', ['$blacklist$', '$groupName$']], function (text) {
+        bridge.request('i18n', ['notification', ['$' + mode + '$', '$groupName$']], function (text) {
             Banner.prototype.show.call(banner, mode, text);
         });
     };
