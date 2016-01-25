@@ -16,7 +16,7 @@
         ]
     };
 
-    gulp.task('js', ['content.js', 'inline.js', 'vendors.js']);
+    gulp.task('js', ['content.js', 'inline.js']);
 
     gulp.task('content.js', function () {
         return jsRoutine(config.common.concat(config.content), 'content.js');
@@ -24,13 +24,6 @@
 
     gulp.task('inline.js', function () {
         return jsRoutine(config.vendors.concat(config.common, config.inline), 'inline.js');
-    });
-
-    gulp.task('vendors.js', function(){
-        return jsRoutine([
-            'node_modules/eev/eev.min.js',
-            'node_modules/jquery/dist/jquery.min.js'
-        ], 'vendors.js');
     });
 
     gulp.task('watch', ['js'], function () {
