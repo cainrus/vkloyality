@@ -1,3 +1,4 @@
+/* global Promise */
 function User(id) {
     this.id = id;
     this.state = null;
@@ -52,24 +53,31 @@ User.prototype.checkLists = function () {
     var d = $.Deferred(), promises = [], cache;
 
     var resolve = function (state) {
-        if (!cache) {
+
+        if (cache === void 0) {
             this.state = cache = state;
             storage.setItem('user.' + this.uid, {state: state, updated: +new Date().getTime()});
             d.resolveWith(this, [this.state]);
         }
     }.bind(this);
 
-    this.checkBlacklist().then(function (result) {
-        if (result) {
-            resolve(this.BLACKLIST);
-        }
-    }.bind(this));
-
-    this.checkWhitelist().then(function (result) {
-        if (result) {
-            resolve(this.WHITELIST);
-        }
-    }.bind(this));
+    Promise.all([
+        this.checkBlacklist().then(function (inBlacklist) {
+            if (inBlacklist) {
+                resolve(this.BLACKLIST);
+            }
+        }.bind(this)),
+        this.checkWhitelist().then(function (inWhitelist) {
+            if (inWhitelist) {
+                resolve(this.WHITELIST);
+            }
+        }.bind(this))
+    ]).then(function(){
+        resolve(this.NOLIST);
+    }.bind(this), function(){
+        // research behaviour with null.
+        resolve(null);
+    });
 
     return d;
 };
@@ -107,21 +115,66 @@ User.prototype.checkBlacklist = function () {
     var uid = this.uid;
 
     return new Promise(function(resolve, reject){
-        $.ajax({
-            url: 'https://api.vkontakte.ru/method/board.getComments?extended=1&topic_id=' + topic_id + '&group_id=' + board_id,
-            dataType: 'jsonp'
-        })
-            .fail(reject)
-            .then(function (result) {
-                var comments = result.response.comments,
-                    comment,
+
+        var readAllComments = function() {
+            return new Promise(function(resolve, reject) {
+                try {
+                    (function doRoutine(options) {
+                        options = options || {};
+                        options.offset = options.offset || 0;
+                        options.attempt = options.attempt || 0;
+                        options.comments = options.comments || [];
+                        options.count = options.count || 100;
+                        options.method = 'board.getComments';
+
+                        $.ajax({
+                            url: 'https://api.vkontakte.ru/method/' + options.method,
+                            dataType: 'jsonp',
+                            data: {
+                                extended: 1,
+                                count: options.count,
+                                topic_id: topic_id,
+                                group_id: board_id,
+                                offset: options.offset
+                            }
+                        }).fail(function () {
+                            if (options.attempt < 3) {
+                                options.attempt++;
+                                doRoutine(options);
+                            } else {
+                                reject();
+                            }
+                        }).done(function (result) {
+                            var comments = result.response.comments;
+                            var count = comments[0];
+                            options.comments = options.comments.concat(comments.slice(1));
+                            if (options.offset < count) {
+                                options.attempt = 0;
+                                options.offset += options.count;
+                                doRoutine(options);
+                            } else {
+                                resolve(options.comments);
+                            }
+                        });
+
+                    }());
+                } catch(e) {
+                    reject();
+                }
+
+            });
+        };
+
+        return readAllComments()
+            .then(function (comments) {
+                var comment,
                     ids = [],
                     allowed_authors = [101, 9894756];
 
                 for (var c in comments) {
                     if (comments.hasOwnProperty(c)) {
                         comment = comments[c];
-                        if (typeof comment === 'object' && comment.text && allowed_authors.indexOf(comment.from_id) !== -1) {
+                        if (comment.text && allowed_authors.indexOf(comment.from_id) !== -1) {
                             ids = ids.concat((comment.text
                                 .match(/(\bid\d+)|vk\.com\/(.+?\b)/g) || [])
                                 .map(function (a) {
@@ -131,22 +184,28 @@ User.prototype.checkBlacklist = function () {
                     }
                 }
                 return ids;
-            }).then(function (ids) {
-                return this.getUID(ids);
-            }.bind(this)).then(function (users) {
+            }, reject)
+            .then(this.getUID.bind(this), reject)
+            .then(function (users) {
                 return resolve(users.some(function (user) {
                     return user.uid == uid;
                 }));
-            }.bind(this));
+            }.bind(this), reject);
     }.bind(this));
 
 };
 
 User.prototype.checkWhitelist = function () {
-    return $.ajax({
-        url: 'https://api.vk.com/method/groups.isMember?group_id=' + this.group_id + '&user_id=' + this.uid,
-        dataType: 'jsonp'
-    }).then(function (result) {
-        return typeof result.response === 'number' ? result.response : result.response[0].member;
-    });
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: 'https://api.vk.com/method/groups.isMember',
+            dataType: 'jsonp',
+            data: {
+                group_id: this.group_id,
+                user_id: this.uid
+            }
+        }).then(function (result) {
+            resolve(typeof result.response === 'number' ? result.response : result.response[0].member);
+        }, reject);
+    }.bind(this));
 };

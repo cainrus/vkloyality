@@ -51,7 +51,7 @@ Storage.prototype.routine = function(cache, keys, value) {
                 return void 0;
             }
         } else if (isSetter) {
-            return this.routine((cache[key] = {}), keys, value);
+            return this.routine(cache[key] || (cache[key] = {}), keys, value);
         }
     } else {
         if (isGetter) {
