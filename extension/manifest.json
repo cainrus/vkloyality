@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "externally_connectable": {
     "matches": [
       "*://vk.com/*"
@@ -31,5 +31,10 @@
   },
   "web_accessible_resources": [
     "build/inline.js"
-  ]
+  ],
+  "applications": {
+    "gecko": {
+      "id": "vklist@cainrus.com"
+    }
+  }
 }

@@ -6,13 +6,14 @@
     var zip = require('gulp-zip');
     var plumber = require('gulp-plumber');
     var wrapper = require('gulp-wrapper');
+    var rename = require('gulp-rename');
 
     var config = {
         common: ['./src/libs/*.js'],
         inline: ['./src/inline/*.js'],
         content: ['./src/content/*.js'],
         vendors: [
-            'node_modules/jquery/dist/jquery.min.js'
+            'node_modules/jquery/dist/jquery.js'
         ]
     };
 
@@ -33,6 +34,8 @@
     gulp.task('build', ['js'], function(){
         return gulp.src('extension/**/*')
             .pipe(zip('extension.zip'))
+            .pipe(gulp.dest('./build'))
+            .pipe(rename('extension.xpi'))
             .pipe(gulp.dest('./build'));
     });
 
