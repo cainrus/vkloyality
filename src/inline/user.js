@@ -11,28 +11,35 @@ User.prototype.WHITELIST = 2;
 
 User.prototype.load = function () {
 
-    if (this.state === null) {
-        this.state = this.loadState(this.id);
-    }
+    return new Promise(function(resolve, reject) {
+        try {
+            if (this.state === null) {
+                this.state = this.loadState(this.id);
+            }
 
-    if (this.state === this.BLACKLIST || this.state === this.WHITELIST || this.state === this.NOLIST) {
-        return $.Deferred().resolveWith(this, [this.state]);
-    }
+            if (this.state === this.BLACKLIST || this.state === this.WHITELIST || this.state === this.NOLIST) {
+                return resolve(this.state);
+            }
+            
+            if (/^(id)?\d+$/.test(this.id)) {
+                this.uid = String(this.id).replace(/\D+/, '');
+                return this.checkLists().then(resolve).catch(reject);
+            } else {
+                // Find by nickname.
+                return this.getUID(this.id)
+                    .then(function (result) {
+                        this.uid = result[0].uid;
+                        return this.checkLists().then(resolve).catch(reject);
+                    }.bind(this))
+                    .catch(reject);
+            }
 
-    var uidRegExp = /id\d+/;
-    if (typeof this.id === 'number') {
-        this.uid = this.id;
-        return this.checkLists();
-    }
-    else if (this.id.match(uidRegExp)) {
-        this.uid = +this.id.replace(/^id/, '');
-        return this.checkLists();
-    } else {
-        return this.getUID(this.id).then(function (result) {
-            this.uid = result[0].uid;
-            return this.checkLists();
-        }.bind(this));
-    }
+        } catch (e) {
+            reject(e);
+        }
+    }.bind(this));
+
+
 };
 
 User.prototype.loadState = function(uid) {
@@ -49,37 +56,23 @@ User.prototype.loadState = function(uid) {
 
 
 User.prototype.checkLists = function () {
-
-    var d = $.Deferred(), promises = [], cache;
-
-    var resolve = function (state) {
-
-        if (cache === void 0) {
-            this.state = cache = state;
-            storage.setItem('user.' + this.uid, {state: state, updated: +new Date().getTime()});
-            d.resolveWith(this, [this.state]);
-        }
-    }.bind(this);
-
-    Promise.all([
-        this.checkBlacklist().then(function (inBlacklist) {
-            if (inBlacklist) {
-                resolve(this.BLACKLIST);
-            }
-        }.bind(this)),
-        this.checkWhitelist().then(function (inWhitelist) {
+    return new Promise(function(resolve, reject){
+        Promise.all([
+            this.checkBlacklist(),
+            this.checkWhitelist()
+        ]).then(function(result){
+            var inBlacklist = !!result[0];
+            var inWhitelist = !!result[1];
+            var state = this.NOLIST;
             if (inWhitelist) {
-                resolve(this.WHITELIST);
+                state = this.WHITELIST;
+            } else if (inBlacklist) {
+                state = this.BLACKLIST;
             }
-        }.bind(this))
-    ]).then(function(){
-        resolve(this.NOLIST);
-    }.bind(this), function(){
-        // research behaviour with null.
-        resolve(null);
-    });
-
-    return d;
+            storage.setItem('user.' + this.uid, {state: state, updated: +new Date().getTime()});
+            resolve(state);
+        }.bind(this), reject);
+    }.bind(this));
 };
 
 User.prototype.getUID = function (id) {
@@ -89,13 +82,16 @@ User.prototype.getUID = function (id) {
         key = 'usermap.' + this.uid
         uid = storage.getItem(key, key);
         if (uid) {
-            return $.Deferred().resolve([{uid: +uid}]);
+            return Promise.resolve([{uid: +uid}]);
         }
     }
 
-    return $.ajax({
-        url: 'https://api.vk.com/method/users.get?fields=screen_name&user_ids=' + id,
-        dataType: 'jsonp'
+    return new JSONP({
+        url: 'https://api.vk.com/method/users.get',
+        data: {
+            fields: 'screen_name',
+            user_ids: id
+        }
     })
         .then(function (result) {
             if (result.response) {
@@ -104,7 +100,7 @@ User.prototype.getUID = function (id) {
                 }
                 return result.response;
             }
-            return $.Deferred().reject();
+            return Promise.reject();
         });
 };
 
@@ -126,10 +122,8 @@ User.prototype.checkBlacklist = function () {
                         options.comments = options.comments || [];
                         options.count = options.count || 100;
                         options.method = 'board.getComments';
-
-                        $.ajax({
+                        new JSONP({
                             url: 'https://api.vkontakte.ru/method/' + options.method,
-                            dataType: 'jsonp',
                             data: {
                                 extended: 1,
                                 count: options.count,
@@ -137,14 +131,8 @@ User.prototype.checkBlacklist = function () {
                                 group_id: board_id,
                                 offset: options.offset
                             }
-                        }).fail(function () {
-                            if (options.attempt < 3) {
-                                options.attempt++;
-                                doRoutine(options);
-                            } else {
-                                reject();
-                            }
-                        }).done(function (result) {
+                        }).then(function (result) {
+
                             var comments = result.response.comments;
                             var count = comments[0];
                             options.comments = options.comments.concat(comments.slice(1));
@@ -154,6 +142,13 @@ User.prototype.checkBlacklist = function () {
                                 doRoutine(options);
                             } else {
                                 resolve(options.comments);
+                            }
+                        }, function(){
+                            if (options.attempt < 3) {
+                                options.attempt++;
+                                doRoutine(options);
+                            } else {
+                                reject();
                             }
                         });
 
@@ -197,9 +192,8 @@ User.prototype.checkBlacklist = function () {
 
 User.prototype.checkWhitelist = function () {
     return new Promise(function (resolve, reject) {
-        $.ajax({
+        new JSONP({
             url: 'https://api.vk.com/method/groups.isMember',
-            dataType: 'jsonp',
             data: {
                 group_id: this.group_id,
                 user_id: this.uid

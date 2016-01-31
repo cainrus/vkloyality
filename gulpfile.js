@@ -12,9 +12,7 @@
         common: ['./src/libs/*.js'],
         inline: ['./src/inline/*.js'],
         content: ['./src/content/*.js'],
-        vendors: [
-            'node_modules/jquery/dist/jquery.js'
-        ]
+        vendors: []
     };
 
     gulp.task('js', ['content.js', 'inline.js']);

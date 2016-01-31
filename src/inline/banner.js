@@ -1,31 +1,47 @@
-function Banner(settings) {
+function Banner() {
+
     this.bannerId = "srm_banner";
     this.bannerTextId = "srm_text";
     this.bannerCloseId = "srm_close";
     this.bannerIconId = "srm_icon";
     this.bannerInnerId = "srm_inner";
+    
+    this.banner = elFactory.createElement({tag: 'div', id: this.bannerId});
+    this.inner = elFactory.createElement({tag: 'div', id: this.bannerInnerId});
+    this.icon = elFactory.createElement({tag: 'span', id: this.bannerIconId});
+    this.text = elFactory.createElement({tag: 'span', id: this.bannerTextId});
+    this.close = elFactory.createElement({tag: 'div', id: this.bannerCloseId});
 
-    this.$banner = $('<div>').attr('id', this.bannerId);
-    this.$inner = $('<div>').attr('id', this.bannerInnerId).appendTo(this.$banner);
-    this.$icon = $('<span>').attr('id', this.bannerIconId).appendTo(this.$inner);
-    this.$text = $('<span>').attr('id', this.bannerTextId).appendTo(this.$inner);
-    this.$close = $('<div>').attr('id', this.bannerCloseId).appendTo(this.$banner);
+    this.inner.appendChild(this.icon);
+    this.inner.appendChild(this.text);
+    this.banner.appendChild(this.inner);
+    this.banner.appendChild(this.close);
+
+    this.onCloseClick = this.onCloseClick.bind(this);
 }
 
 Banner.prototype.hide = function () {
-    this.$banner.detach().off().remove();;
+    if (this.banner.parentNode) {
+        this.banner.parentNode.removeChild(this.banner);
+        this.banner.removeEventListener('click', this.onCloseClick);
+    }
+};
+
+Banner.prototype.onCloseClick = function() {
+    this.hide();
 };
 
 Banner.prototype.show = function (mode, text) {
+    this.banner.setAttribute('class', mode);
+    this.banner.addEventListener('click', this.onCloseClick);
 
-    this.$banner.attr('class', mode);
+    this.text.innerText = text;
 
-    this.$close.on('click', function () {
-        this.hide();
-    }.bind(this));
-
-    this.$text.html(text);
-    if (!this.$banner.parent().length) {
-        $('#profile').before(this.$banner);
+    // Append banner into dom.
+    if (!this.banner.parentNode) {
+        var profile = document.getElementById('profile');
+        if (profile) {
+            profile.parentNode.insertBefore(this.banner, profile);
+        }
     }
 };

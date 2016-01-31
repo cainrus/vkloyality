@@ -1,6 +1,5 @@
 /* global cur, Storage, Banner */
 
-var $ = jQuery.noConflict();
 var prevEventData = null;
 var banner, storage;
 var bridge = new Bridge({namespace: "x44g8LoO3gK1"});
@@ -15,7 +14,6 @@ setTimeout(function () {
     };
 
     storage = new Storage({namespace: "x44g8LoO3gK1"});
-
     if (cur.module.toLowerCase() === 'profile') {
         notify();
     }
@@ -39,10 +37,9 @@ function updateState(eventData) {
         var user = new User(eventData.id);
         user.load()
             .then(function (state) {
-
-                if (state === this.BLACKLIST) {
+                if (state === user.BLACKLIST) {
                     banner.show('blacklist');
-                } else if (state === this.WHITELIST) {
+                } else if (state === user.WHITELIST) {
                     banner.show('whitelist');
                 }
             });
