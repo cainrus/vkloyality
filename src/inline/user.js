@@ -77,31 +77,47 @@ User.prototype.checkLists = function () {
 
 User.prototype.getUID = function (id) {
     var isMulti = id instanceof Array,
-        key, uid;
+        ids = Array.isArray(id) ? id : [id],
+        key, uid, prefix = 'usermap.';
     if (!isMulti) {
-        key = 'usermap.' + this.uid
+        key = prefix + this.uid;
         uid = storage.getItem(key, key);
         if (uid) {
             return Promise.resolve([{uid: +uid}]);
         }
     }
 
-    return new JSONP({
-        url: 'https://api.vk.com/method/users.get',
-        data: {
-            fields: 'screen_name',
-            user_ids: id
-        }
-    })
-        .then(function (result) {
-            if (result.response) {
-                if (!isMulti) {
-                    storage.setItem(key, result.response[0].uid);
-                }
-                return result.response;
+    var perIteration = 100;
+    var response = [];
+
+    function rutine(ids) {
+
+        return new JSONP({
+            url: 'https://api.vk.com/method/users.get',
+            data: {
+                fields: 'screen_name',
+                user_ids: ids.splice(0, perIteration).join(',')
             }
-            return Promise.reject();
-        });
+        })
+            .then(function (result) {
+                if (result.response) {
+                    if (!isMulti) {
+                        storage.setItem(key, result.response[0].uid);
+                    }
+                    response = response.concat(result.response);
+                    if (ids.length) {
+                        return rutine(ids);
+                    } else {
+                        return response;
+                    }
+                }
+                return Promise.reject();
+            });
+    }
+
+    return rutine(ids);
+
+
 };
 
 User.prototype.checkBlacklist = function () {
@@ -174,7 +190,10 @@ User.prototype.checkBlacklist = function () {
                                 .match(/(\bid\d+)|vk\.com\/(.+?\b)/g) || [])
                                 .map(function (a) {
                                     return a.split('/').pop();
-                                }));
+                                }))
+                                .filter(function(name){
+                                    return ['wall', 'doc', 'srm_whitelist', 'topic', 's'].indexOf(name) === -1;
+                                });
                         }
                     }
                 }
