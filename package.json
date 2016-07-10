@@ -1,6 +1,6 @@
 {
   "name": "vklist",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "vk common whitelist & blacklist",
   "main": "gulp.js",
   "scripts": {
