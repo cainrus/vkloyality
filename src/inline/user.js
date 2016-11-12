@@ -139,7 +139,8 @@ User.prototype.checkBlacklist = function () {
                         options.count = options.count || 100;
                         options.method = 'board.getComments';
                         new JSONP({
-                            url: 'https://api.vkontakte.ru/method/' + options.method,
+
+                            url: 'https://api.vk.com/method/' + options.method,
                             data: {
                                 extended: 1,
                                 count: options.count,

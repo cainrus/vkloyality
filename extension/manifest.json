@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "externally_connectable": {
     "matches": [
       "*://new.vk.com/*",
@@ -12,7 +12,6 @@
   "content_scripts": [
     {
       "matches": [
-        "*://new.vk.com/*",
         "*://vk.com/*",
         "*://api.vk.com/*"
       ],
