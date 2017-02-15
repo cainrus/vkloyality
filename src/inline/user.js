@@ -188,7 +188,7 @@ User.prototype.checkBlacklist = function () {
                         comment = comments[c];
                         if (comment.text && allowed_authors.indexOf(comment.from_id) !== -1) {
                             ids = ids.concat((comment.text
-                                .match(/(\bid\d+)|vk\.com\/(.+?\b)/g) || [])
+                                .match(/(\bid\d+)|vk\.com\/([\w\.]+)\b/g) || [])
                                 .map(function (a) {
                                     return a.split('/').pop();
                                 }))
