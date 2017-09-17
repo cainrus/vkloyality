@@ -10,11 +10,21 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "awesome-typescript-loader": "^3.2.3",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-wrapper": "^1.0.0",
-    "gulp-zip": "^3.0.2"
+    "gulp-zip": "^3.0.2",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.5.2",
+    "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "@types/react": "16.0.5",
+    "@types/react-dom": "15.5.4",
+    "react": "15.6.1",
+    "react-dom": "15.6.1"
   }
 }
