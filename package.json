@@ -24,7 +24,9 @@
   "dependencies": {
     "@types/react": "16.0.5",
     "@types/react-dom": "15.5.4",
+    "@types/card-validator": "4.1.0",
     "react": "15.6.1",
-    "react-dom": "15.6.1"
+    "react-dom": "15.6.1",
+    "card-validator": "4.1.0"
   }
 }
