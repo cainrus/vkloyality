@@ -9,6 +9,8 @@ function exists<T>(e: T): boolean
 
 interface ICardCheckerState
 {
+  IsChecking: boolean;
+  IsSwindler: string;
   CardNumber: string;
   Validation?: cardValidator.validNumber;
 }
@@ -20,13 +22,15 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   constructor()
   {
     super();
-    this.state = { CardNumber: "" };
+    this.state = { CardNumber: "", IsChecking: false, IsSwindler: null };
   }
 
   updateState: (e: React.ChangeEvent<HTMLInputElement>) => boolean = e =>
   {
     this.state.CardNumber = e.target.value.replace(/[\s-]/g, '');
     this.state.Validation = cardValidator.number(this.state.CardNumber);
+    this.state.IsChecking = false;
+    this.state.IsSwindler = null;
     this.setState(this.state);
     return true;
   }
@@ -59,6 +63,13 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
     return num;
   }
 
+  checkIfSwindler: (e: React.MouseEvent<HTMLButtonElement>) => boolean = e =>
+  {
+    this.state.IsChecking = true;
+    this.setState(this.state);
+    return true;
+  }
+
   render() {
     // todo: submit a pull request to card-validator, see https://support.worldpay.com/support/kb/bg/testandgolive/tgl5103.html
     // for now the check is simplified resulting in less precise card validation.
@@ -69,9 +80,17 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         : this.isValidated() && !this.state.Validation.isPotentiallyValid
           ? "invalid"
           : "none";
+    let text = this.isRecognized() && this.state.Validation.card.gaps ? this.applyGaps() : this.state.CardNumber;
+
     return <div className={validityState}>
-      <input onChange={this.updateState} placeholder="enter card number here" value={this.isRecognized() && this.state.Validation.card.gaps ? this.applyGaps() : this.state.CardNumber} />
-      <p>{this.isRecognized() ? this.state.Validation.card.niceType : null}</p>
+      <input onChange={this.updateState} placeholder="enter card number here" value={text} readOnly={this.state.IsChecking} />
+      {validityState == "valid"
+        ? this.state.IsChecking
+          ? <p>throbber here</p>
+          : this.state.IsSwindler != null
+            ? <div><h3>Warning: swindler found</h3><a href={this.state.IsSwindler} target="_blank">Learn more...</a></div>
+            : <button onClick={this.checkIfSwindler} role="button">Check</button>
+        : null}
     </div>
   }
 }
