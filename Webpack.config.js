@@ -11,7 +11,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: '__MSG_appName__',
-      filename: path.resolve(__dirname, 'extension/build/popup.html')
+      filename: path.resolve(__dirname, 'extension/build/popup.html'),
+      template: path.resolve(__dirname, 'src/popup/cardchecker.ejs'),
+      externals: [
+        'https://unpkg.com/react@15.3.1/dist/react.min.js',
+        'https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js'
+      ]
     })
   ],
 
@@ -31,5 +36,10 @@ module.exports = {
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
+  },
+
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM'
   }
 };
