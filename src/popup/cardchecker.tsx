@@ -40,7 +40,6 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
     let original = this.state.CardNumber;
     let num = "";
     let lastGap = 0;
-    console.log(original.length);
     for (var i = 0; i < gaps.length; i++)
     {
       let currentGap = gaps[i];
