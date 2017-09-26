@@ -61,13 +61,16 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   }
 
   render() {
-    return <div className={
-      // todo: apply correct validation, see https://support.worldpay.com/support/kb/bg/testandgolive/tgl5103.html
-      this.isValidated() && this.state.Validation.isValid
+    // todo: submit a pull request to card-validator, see https://support.worldpay.com/support/kb/bg/testandgolive/tgl5103.html
+    // for now the check is simplified resulting in less precise card validation.
+    // Airplus cards aren't recognized at all
+    let validityState =
+      this.isValidated() && this.state.Validation.isPotentiallyValid && this.state.CardNumber.length >= 13 // minimal possible length (visa cards)
         ? "valid"
         : this.isValidated() && !this.state.Validation.isPotentiallyValid
           ? "invalid"
-          : "none"}>
+          : "none";
+    return <div className={validityState}>
       <input onChange={this.updateState} placeholder="enter card number here" value={this.isRecognized() && this.state.Validation.card.gaps ? this.applyGaps() : this.state.CardNumber} />
       <p>{this.isRecognized() ? this.state.Validation.card.niceType : null}</p>
     </div>
