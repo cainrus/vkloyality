@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
+import axios from "axios";
 
 function exists<T>(e: T): boolean
 {
@@ -39,6 +40,62 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   {
     this.state.IsChecking = true;
     this.setState(this.state);
+
+    axios.create().get('https://api.vk.com/method/board.getComments?group_id=104169151&topic_id=32651912&need_likes=0&offset=0&count=1&extended=0&v=5.68', { timeout: 2000 })
+      .then(response => {
+        console.log(response);
+        interface IQuery {
+          From: number;
+          Count: number;
+        }
+        let queries : IQuery[] = [];
+        for (let i = -1; true; i++)
+        {
+          let from = i >= 0 ? queries[i].From + queries[i].Count : 1;
+          let to = (response.data.response.count as number) - from;
+          if (to == NaN) throw new Error("Invalid response");
+          to = to > 100 ? 100 : to;
+          if (to <= 0)
+            break;
+          queries.push({ From: from, Count: to });
+        }
+        console.log(queries);
+        
+        Promise
+          .all(queries.map(q => axios.create().get(`https://api.vk.com/method/board.getComments?group_id=104169151&topic_id=32651912&need_likes=0&offset=${q.From}&count=${q.Count}&extended=0&v=5.68`, { timeout: 2000 })))
+          .then(response => {
+            console.log(response);
+            let invalid: boolean[] = response.map(r => r.data.response.items.push as boolean).filter(b => !b);
+            console.log(invalid);
+            if (invalid.length > 0)
+              throw new Error("Invalid response");
+
+            let comments: any[] = response.map(r => r.data.response.items).reduce((a, b) => a.concat(b));
+            console.log(comments);
+            let warning = comments
+              .map(comment => ({Comment: comment, Index: comment.text.indexOf(this.state.CardNumber)}))
+              .filter(candidate => candidate.Index >= 0)
+              .filter(candidate => candidate.Index == 0 || candidate.Comment.text[candidate.Index - 1] == '\n')
+              .filter(candidate => candidate.Comment.text.length == candidate.Index + this.state.CardNumber.length
+                || candidate.Comment.text[candidate.Index + this.state.CardNumber.length] == '\n')
+              .map(candidate => candidate.Comment);
+            console.log(warning);
+            if (warning.length > 0)
+              this.state.IsSwindler = `https://vk.com/topic-104169151_32651912?post=${warning[0].id}`;
+            this.state.IsChecking = false;
+            this.setState(this.state);
+          })
+          .catch(e => {
+            console.log(e);
+            this.state.error = e;
+            this.setState(this.state);
+          });
+      })
+      .catch(e => {
+        console.log(e);
+        this.state.error = e;
+        this.setState(this.state);
+      } ); 
     return true;
   }
 
