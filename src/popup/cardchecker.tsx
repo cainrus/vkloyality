@@ -2,6 +2,8 @@
 import * as ReactDOM from "react-dom";
 import axios from "axios";
 
+import './cardchecker.less';
+
 function exists<T>(e: T): boolean
 {
   return typeof e != 'undefined' && e != null;

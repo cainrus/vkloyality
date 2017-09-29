@@ -2,9 +2,6 @@
 <head>
   <meta charset="utf-8">
   <title><%= htmlWebpackPlugin.options.title%></title>
-  <% for (var css in htmlWebpackPlugin.files.css) { %>
-  <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
-  <% } %>
 </head>
 <body>
 <% /* mountPoint is the only div on the page */ %>
@@ -15,7 +12,7 @@ for (var i = 0; i < extern.length; i++) {
 var cdn = extern[ i ];%>
 <script src="<%= cdn %>"></script>
 <% } } %>
-<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+<% for (var i = 0; i < htmlWebpackPlugin.files.chunks.length; i++) { %>
 <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
 <% } %>
 </body>

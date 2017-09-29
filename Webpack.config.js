@@ -1,4 +1,5 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -17,7 +18,8 @@ module.exports = {
         'https://unpkg.com/react@15.3.1/dist/react.min.js',
         'https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js'
       ]
-    })
+    }),
+    new ExtractTextPlugin( 'popup.css?hash=[chunkhash]' )
   ],
 
   resolve: {
@@ -31,7 +33,9 @@ module.exports = {
       { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+
+      { test: /\.less$/, use: ExtractTextPlugin.extract({ use: [ "css-loader", "less-loader" ] }) }
     ]
   },
 
