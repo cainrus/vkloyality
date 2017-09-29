@@ -117,7 +117,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         <input onChange={this.updateState} placeholder="enter payment props to check here" value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
-            <h3>Warning: swindler found</h3>
+            <h3 className="swindler">Warning: swindler found</h3>
             <a href={this.state.IsSwindler} target="_blank">Learn more...</a>
           </div>
           : this.state.IsChecking
