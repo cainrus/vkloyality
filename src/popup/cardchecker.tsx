@@ -127,7 +127,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
           : this.state.IsNotSwindler === true
             ? <h3 className="notSwindler">No swindler activity found</h3>
             : this.state.IsChecking
-              ? <p> throbber here</p>
+              ? <div className="throbber"><div></div></div>
               : <button onClick={this.checkIfSwindler} role="button">Check</button>}
     </div>
   }
