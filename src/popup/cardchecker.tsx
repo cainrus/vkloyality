@@ -133,8 +133,8 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
           <input onChange={this.updateState} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
-            <h3 className="swindler">Warning: swindler found</h3>
-            <a href={this.state.IsSwindler} target="_blank">Learn more...</a>
+            <h3 className="swindler">{chrome.i18n.getMessage("popup_attention_swindler")}</h3>
+            <a href={this.state.IsSwindler} target="_blank">{chrome.i18n.getMessage("popup_attention_learn_more")}</a>
           </div>
           : this.state.IsNotSwindler === true
             ? <h3 className="notSwindler">No swindler activity found</h3>

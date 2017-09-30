@@ -46,5 +46,12 @@
 
   "popup_input_placeholder": {
     "message": "платёжные реквизиты для проверки"
+  },
+
+  "popup_attention_swindler": {
+    "message": "Внимание: обнаружен мошенник"
+  },
+  "popup_attention_learn_more": {
+    "message": "Подробнее..."
   }
 }
