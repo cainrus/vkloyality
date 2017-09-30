@@ -32,7 +32,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
 
   updateState: (e: React.ChangeEvent<HTMLInputElement>) => boolean = e =>
   {
-    this.state.CardNumber = e.target.value.replace(/[\s-]/g, '');
+    this.state.CardNumber = e.target.value.replace(/[\s-\(\)_]/g, '');
     this.state.IsChecking = false;
     this.state.IsSwindler = null;
     this.state.IsNotSwindler = false;
