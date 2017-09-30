@@ -28,5 +28,19 @@
   },
   "whitelist": {
     "message": "белый список"
+  },
+
+  "popup_error": {
+    "message": "Произошла ошибка \"$error_message$\". Пожалуйста, свяжитесь с ",
+    "placeholders": {
+      "error_message": {
+        "content": "$1",
+        "example": "unknown error"
+      }
+    }
+  },
+
+  "popup_error_author": {
+    "message": "автором"
   }
 }

@@ -126,7 +126,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   render() {
     return this.state.error
       ? <div>
-          <p className="error">{this.state.error.message} happens. Please contact the <a href="https://vk.com/b.geor">author</a></p>
+          <p className="error">{chrome.i18n.getMessage("popup_error", this.state.error.message)}<a href='https://vk.com/b.geor'>{chrome.i18n.getMessage("popup_error_author")}</a></p>
           <button onClick={this.resetState}>Try Again</button>
         </div>
       : <div>
