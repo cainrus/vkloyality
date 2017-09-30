@@ -126,8 +126,8 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   render() {
     return this.state.error
       ? <div>
-          <p className="error">{chrome.i18n.getMessage("popup_error", this.state.error.message)}<a href='https://vk.com/b.geor'>{chrome.i18n.getMessage("popup_error_author")}</a></p>
-          <button onClick={this.resetState}>Try Again</button>
+        <p className="error">{chrome.i18n.getMessage("popup_error", this.state.error.message)}<a href='https://vk.com/b.geor'>{chrome.i18n.getMessage("popup_error_author")}</a></p>
+        <button onClick={this.resetState}>{chrome.i18n.getMessage("popup_button_try_again")}</button>
         </div>
       : <div>
           <input onChange={this.updateState} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
@@ -137,10 +137,10 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
             <a href={this.state.IsSwindler} target="_blank">{chrome.i18n.getMessage("popup_attention_learn_more")}</a>
           </div>
           : this.state.IsNotSwindler === true
-            ? <h3 className="notSwindler">No swindler activity found</h3>
+            ? <h3 className="notSwindler">{chrome.i18n.getMessage("popup_not_swindler")}</h3>
             : this.state.IsChecking
               ? <div className="throbber"><div></div></div>
-              : <button onClick={this.checkIfSwindler} role="button">Check</button>}
+              : <button onClick={this.checkIfSwindler} role="button">{chrome.i18n.getMessage("popup_button_check")}</button>}
     </div>
   }
 }

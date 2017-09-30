@@ -53,5 +53,16 @@
   },
   "popup_attention_learn_more": {
     "message": "Подробнее..."
+  },
+
+  "popup_not_swindler": {
+    "message": "Мошенничество не обнаружено"
+  },
+
+  "popup_button_try_again": {
+    "message": "Попробовать ещё раз"
+  },
+  "popup_button_check": {
+    "message": "Проверить"
   }
 }
