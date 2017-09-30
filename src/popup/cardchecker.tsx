@@ -13,6 +13,7 @@ interface ICardCheckerState
 {
   IsChecking: boolean;
   IsSwindler: string;
+  IsNotSwindler?: boolean;
   CardNumber: string;
   error?: any;
 }
@@ -34,6 +35,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
     this.state.CardNumber = e.target.value.replace(/[\s-]/g, '');
     this.state.IsChecking = false;
     this.state.IsSwindler = null;
+    this.state.IsNotSwindler = false;
     this.setState(this.state);
     return true;
   }
@@ -84,6 +86,8 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
             console.log(warning);
             if (warning.length > 0)
               this.state.IsSwindler = `https://vk.com/topic-104169151_32651912?post=${warning[0].id}`;
+            else
+              this.state.IsNotSwindler = true;
             this.state.IsChecking = false;
             this.setState(this.state);
           })
@@ -120,9 +124,11 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
             <h3 className="swindler">Warning: swindler found</h3>
             <a href={this.state.IsSwindler} target="_blank">Learn more...</a>
           </div>
-          : this.state.IsChecking
-            ? <p> throbber here</p>
-            : <button onClick={this.checkIfSwindler} role="button">Check</button>}
+          : this.state.IsNotSwindler === true
+            ? <h3 className="notSwindler">No swindler activity found</h3>
+            : this.state.IsChecking
+              ? <p> throbber here</p>
+              : <button onClick={this.checkIfSwindler} role="button">Check</button>}
     </div>
   }
 }
