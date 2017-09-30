@@ -36,6 +36,8 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
 
   getDefaultState: () => ICardCheckerState = () => ({ CardNumber: "", IsChecking: false, IsSwindler: null });
 
+  inputId: string = "main_input";
+
   constructor()
   {
     super();
@@ -50,6 +52,16 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
     this.state.IsNotSwindler = false;
     this.setState(this.state);
     return true;
+  }
+
+  focusInput: () => void = () =>
+  {
+    document.getElementById(this.inputId).focus();
+  }
+
+  componentDidMount()
+  {
+    this.focusInput();
   }
 
   checkIfSwindler: (e: React.MouseEvent<HTMLButtonElement>) => boolean = e =>
@@ -121,6 +133,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   {
     this.state = this.getDefaultState();
     this.setState(this.state);
+    setTimeout(this.focusInput, 100);
   }
 
   render() {
@@ -130,7 +143,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         <button onClick={this.resetState}>{chrome.i18n.getMessage("popup_button_try_again")}</button>
         </div>
       : <div>
-          <input onChange={this.updateState} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
+          <input onChange={this.updateState} id={this.inputId} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
             <h3 className="swindler">{chrome.i18n.getMessage("popup_attention_swindler")}</h3>
