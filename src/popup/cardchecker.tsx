@@ -130,7 +130,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
           <button onClick={this.resetState}>Try Again</button>
         </div>
       : <div>
-        <input onChange={this.updateState} placeholder="enter payment props to check here" value={this.state.CardNumber} readOnly={this.state.IsChecking} />
+          <input onChange={this.updateState} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
             <h3 className="swindler">Warning: swindler found</h3>

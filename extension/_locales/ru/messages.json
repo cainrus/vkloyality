@@ -42,5 +42,9 @@
 
   "popup_error_author": {
     "message": "автором"
+  },
+
+  "popup_input_placeholder": {
+    "message": "платёжные реквизиты для проверки"
   }
 }
