@@ -37,6 +37,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
   getDefaultState: () => ICardCheckerState = () => ({ CardNumber: "", IsChecking: false, IsSwindler: null });
 
   inputId: string = "main_input";
+  detailsId: string = "details_href";
 
   constructor()
   {
@@ -109,7 +110,10 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
               .map(candidate => candidate.Comment);
             console.log(warning);
             if (warning.length > 0)
+            {
               this.state.IsSwindler = `https://vk.com/topic-104169151_32651912?post=${warning[0].id}`;
+              setTimeout(() => document.getElementById(this.detailsId).focus(), 150);
+            }
             else
               this.state.IsNotSwindler = true;
             this.state.IsChecking = false;
@@ -147,7 +151,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         {this.state.IsSwindler != null
           ? <div>
             <h3 className="swindler">{chrome.i18n.getMessage("popup_attention_swindler")}</h3>
-            <a href={this.state.IsSwindler} target="_blank">{chrome.i18n.getMessage("popup_attention_learn_more")}</a>
+            <a href={this.state.IsSwindler} id={this.detailsId} target="_blank">{chrome.i18n.getMessage("popup_attention_learn_more")}</a>
           </div>
           : this.state.IsNotSwindler === true
             ? <h3 className="notSwindler">{chrome.i18n.getMessage("popup_not_swindler")}</h3>
