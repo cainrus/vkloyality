@@ -4,6 +4,18 @@ import axios from "axios";
 
 import './cardchecker.less';
 
+interface i18n
+{
+  getMessage(messageName: string, substitutions?: any): string;
+}
+
+interface chrome
+{
+  i18n: i18n;
+}
+
+declare const chrome: chrome;
+
 function exists<T>(e: T): boolean
 {
   return typeof e != 'undefined' && e != null;
