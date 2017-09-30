@@ -25,7 +25,6 @@
 
   "blacklist": {
     "message": "черный список"
-
   },
   "whitelist": {
     "message": "белый список"
