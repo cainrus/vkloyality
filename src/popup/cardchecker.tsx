@@ -142,7 +142,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         <p className="error">{chrome.i18n.getMessage("popup_error", this.state.error.message)}<a href='https://vk.com/b.geor'>{chrome.i18n.getMessage("popup_error_author")}</a></p>
         <button onClick={this.resetState}>{chrome.i18n.getMessage("popup_button_try_again")}</button>
         </div>
-      : <div>
+      : <form>
           <input onChange={this.updateState} id={this.inputId} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
@@ -153,8 +153,8 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
             ? <h3 className="notSwindler">{chrome.i18n.getMessage("popup_not_swindler")}</h3>
             : this.state.IsChecking
               ? <div className="throbber"><div></div></div>
-              : <button onClick={this.checkIfSwindler} role="button">{chrome.i18n.getMessage("popup_button_check")}</button>}
-    </div>
+              : <button onClick={this.checkIfSwindler} role="submit">{chrome.i18n.getMessage("popup_button_check")}</button>}
+    </form>
   }
 }
 
