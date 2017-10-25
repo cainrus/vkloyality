@@ -147,6 +147,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         <button onClick={this.resetState}>{chrome.i18n.getMessage("popup_button_try_again")}</button>
         </div>
       : <form>
+	      <h3 className="header">{chrome.i18n.getMessage("popup_header")}</h3>
           <input onChange={this.updateState} id={this.inputId} placeholder={chrome.i18n.getMessage("popup_input_placeholder")} value={this.state.CardNumber} readOnly={this.state.IsChecking} />
         {this.state.IsSwindler != null
           ? <div>
