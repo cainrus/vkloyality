@@ -25,9 +25,48 @@
 
   "blacklist": {
     "message": "черный список"
-
   },
   "whitelist": {
     "message": "белый список"
+  },
+
+  "popup_header": {
+	  "message": "Контроль данных пользователя на наличие мошенничества"
+  },
+ 
+  "popup_error": {
+    "message": "Произошла ошибка \"$error_message$\". Пожалуйста, свяжитесь с ",
+    "placeholders": {
+      "error_message": {
+        "content": "$1",
+        "example": "unknown error"
+      }
+    }
+  },
+
+  "popup_error_author": {
+    "message": "автором"
+  },
+
+  "popup_input_placeholder": {
+    "message": "платёжные реквизиты для проверки"
+  },
+
+  "popup_attention_swindler": {
+    "message": "Внимание: обнаружен мошенник"
+  },
+  "popup_attention_learn_more": {
+    "message": "Подробнее..."
+  },
+
+  "popup_not_swindler": {
+    "message": "Мошенничество не обнаружено"
+  },
+
+  "popup_button_try_again": {
+    "message": "Попробовать ещё раз"
+  },
+  "popup_button_check": {
+    "message": "Проверить"
   }
 }
