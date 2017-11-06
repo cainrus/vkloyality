@@ -13,11 +13,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: '__MSG_appName__',
       filename: path.resolve(__dirname, 'extension/build/popup.html'),
-      template: path.resolve(__dirname, 'src/popup/cardchecker.ejs'),
-      externals: [
-        'https://unpkg.com/react@15.3.1/dist/react.min.js',
-        'https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js'
-      ]
+      template: path.resolve(__dirname, 'src/popup/cardchecker.ejs')
     }),
     new ExtractTextPlugin( 'popup.css?hash=[chunkhash]' )
   ],
@@ -37,10 +33,5 @@ module.exports = {
 
       { test: /\.less$/, use: ExtractTextPlugin.extract({ use: [ "css-loader", "less-loader" ] }) }
     ]
-  },
-
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM'
   }
 };
