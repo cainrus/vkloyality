@@ -6,12 +6,6 @@
 <body>
 <% /* mountPoint is the only div on the page */ %>
 <div></div>
-<% var extern = htmlWebpackPlugin.options.externals;
-if (extern) {
-for (var i = 0; i < extern.length; i++) {
-var cdn = extern[ i ];%>
-<script src="<%= cdn %>"></script>
-<% } } %>
 <% for (var i = 0; i < htmlWebpackPlugin.files.chunks.length; i++) { %>
 <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
 <% } %>
