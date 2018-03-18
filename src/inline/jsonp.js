@@ -45,7 +45,7 @@ JSONP.prototype.callback = function (fnName, resolve, reject) {
         delete this.script;
 
         reject('timeout');
-    }.bind(this), 3000);
+    }.bind(this), 5000);
 
     window[fnName] = function (data) {
         clearTimeout(timeout);

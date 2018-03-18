@@ -5,6 +5,8 @@ function User(id) {
     this.group_id = 110194464;
 }
 
+var LOYALITY_API_VERSION = 3.0;
+
 User.prototype.NOLIST = 0;
 User.prototype.BLACKLIST = 1;
 User.prototype.WHITELIST = 2;
@@ -95,6 +97,7 @@ User.prototype.getUID = function (id) {
         return new JSONP({
             url: 'https://api.vk.com/method/users.get',
             data: {
+				v: LOYALITY_API_VERSION,
                 fields: 'screen_name',
                 user_ids: ids.splice(0, perIteration).join(',')
             }
@@ -139,9 +142,9 @@ User.prototype.checkBlacklist = function () {
                         options.count = options.count || 100;
                         options.method = 'board.getComments';
                         new JSONP({
-
                             url: 'https://api.vk.com/method/' + options.method,
                             data: {
+                                v: LOYALITY_API_VERSION,
                                 extended: 1,
                                 count: options.count,
                                 topic_id: topic_id,
@@ -215,6 +218,7 @@ User.prototype.checkWhitelist = function () {
         new JSONP({
             url: 'https://api.vk.com/method/groups.isMember',
             data: {
+				v: LOYALITY_API_VERSION,
                 group_id: this.group_id,
                 user_id: this.uid
             }
