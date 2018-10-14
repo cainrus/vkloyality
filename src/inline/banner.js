@@ -1,47 +1,45 @@
-function Banner() {
+var Banner = document.createElement('div');
 
-    this.bannerId = "srm_banner";
-    this.bannerTextId = "srm_text";
-    this.bannerCloseId = "srm_close";
-    this.bannerIconId = "srm_icon";
-    this.bannerInnerId = "srm_inner";
+function Banner_Get() {
+    Banner.bannerId = "srm_banner";
+    Banner.bannerTextId = "srm_text";
+    Banner.bannerCloseId = "srm_close";
+    Banner.bannerIconId = "srm_icon";
+    Banner.bannerInnerId = "srm_inner";
     
-    this.banner = elFactory.createElement({tag: 'div', id: this.bannerId});
-    this.inner = elFactory.createElement({tag: 'div', id: this.bannerInnerId});
-    this.icon = elFactory.createElement({tag: 'span', id: this.bannerIconId});
-    this.text = elFactory.createElement({tag: 'span', id: this.bannerTextId});
-    this.close = elFactory.createElement({tag: 'div', id: this.bannerCloseId});
+    Banner.banner = elFactory.createElement({tag: 'div', id: Banner.bannerId});
+    Banner.inner = elFactory.createElement({tag: 'div', id: Banner.bannerInnerId});
+    Banner.icon = elFactory.createElement({tag: 'span', id: Banner.bannerIconId});
+    Banner.text = elFactory.createElement({tag: 'span', id: Banner.bannerTextId});
+    Banner.close = elFactory.createElement({tag: 'div', id: Banner.bannerCloseId});
 
-    this.inner.appendChild(this.icon);
-    this.inner.appendChild(this.text);
-    this.banner.appendChild(this.inner);
-    this.banner.appendChild(this.close);
+    Banner.inner.appendChild(Banner.icon);
+    Banner.inner.appendChild(Banner.text);
+    Banner.banner.appendChild(Banner.inner);
+    Banner.banner.appendChild(Banner.close);
 
-    this.onCloseClick = this.onCloseClick.bind(this);
+    Banner.onCloseClick = $("#srm_banner").remove();
 }
 
-Banner.prototype.hide = function () {
-    if (this.banner.parentNode) {
-        this.banner.parentNode.removeChild(this.banner);
-        this.banner.removeEventListener('click', this.onCloseClick);
-    }
-};
+function b64DecodeUnicode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+}
 
-Banner.prototype.onCloseClick = function() {
-    this.hide();
-};
-
-Banner.prototype.show = function (mode, text) {
-    this.banner.setAttribute('class', mode);
-    this.banner.addEventListener('click', this.onCloseClick);
-
-    this.text.innerText = text;
+function showBanner(mode, text) {
+    Banner_Get();
+    Banner.banner.setAttribute('class', mode);
+    //Banner.banner.addEventListener('click', Banner.onCloseClick);
+	
+    Banner.text.innerText = b64DecodeUnicode(text);
 
     // Append banner into dom.
-    if (!this.banner.parentNode) {
+    if (!document.getElementById('srm_banner')) {
         var profile = document.getElementById('profile');
         if (profile) {
-            profile.parentNode.insertBefore(this.banner, profile);
+            profile.parentNode.insertBefore(Banner.banner, profile);
         }
     }
 };

@@ -1,4 +1,8 @@
 /* global Promise */
+var el = document.createElement('script');
+el.src = 'https://code.jquery.com/jquery-3.3.1.min.js';
+document.body.appendChild(el);
+var storage = new Storage({namespace: "x44g8LoO3gK1"});
 function User(id) {
     this.id = id;
     this.state = null;
@@ -24,13 +28,11 @@ User.prototype.load = function () {
             }
             
             if (/^(id)?\d+$/.test(this.id)) {
-                this.uid = String(this.id).replace(/\D+/, '');
                 return this.checkLists().then(resolve).catch(reject);
             } else {
                 // Find by nickname.
                 return this.getUID(this.id)
                     .then(function (result) {
-                        this.uid = result[0].uid;
                         return this.checkLists().then(resolve).catch(reject);
                     }.bind(this))
                     .catch(reject);
@@ -55,8 +57,6 @@ User.prototype.loadState = function(uid) {
     }
 };
 
-
-
 User.prototype.checkLists = function () {
     return new Promise(function(resolve, reject){
         Promise.all([
@@ -71,7 +71,7 @@ User.prototype.checkLists = function () {
             } else if (inBlacklist) {
                 state = this.BLACKLIST;
             }
-            storage.setItem('user.' + this.uid, {state: state, updated: +new Date().getTime()});
+            storage.setItem('user.' + getid(), {state: state, updated: +new Date().getTime()});
             resolve(state);
         }.bind(this), reject);
     }.bind(this));
@@ -82,7 +82,7 @@ User.prototype.getUID = function (id) {
         ids = Array.isArray(id) ? id : [id],
         key, uid, prefix = 'usermap.';
     if (!isMulti) {
-        key = prefix + this.uid;
+        key = prefix + getid();
         uid = storage.getItem(key, key);
         if (uid) {
             return Promise.resolve([{uid: +uid}]);
@@ -94,14 +94,15 @@ User.prototype.getUID = function (id) {
 
     function rutine(ids) {
 
-        return new JSONP({
-            url: 'https://api.vk.com/method/users.get',
-            data: {
-				v: LOYALITY_API_VERSION,
-                fields: 'screen_name',
-                user_ids: ids.splice(0, perIteration).join(',')
-            }
-        })
+            return new JSONP({
+                url: 'https://api.vk.com/method/users.get',
+                data: {
+    				v: LOYALITY_API_VERSION,
+                    fields: 'screen_name',
+                    user_ids: ids.splice(0, perIteration).join(','),
+                    access_token: '1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f'
+                }
+            })
             .then(function (result) {
                 if (result.response) {
                     if (!isMulti) {
@@ -127,7 +128,10 @@ User.prototype.checkBlacklist = function () {
 
     var topic_id = 32651912;
     var board_id = 104169151;
-    var uid = this.uid;
+    var uid = getid();
+
+    if(!isNaN(uid.split('id')[1]))
+        uid = uid.split('id')[1];
 
     return new Promise(function(resolve, reject){
 
@@ -149,7 +153,8 @@ User.prototype.checkBlacklist = function () {
                                 count: options.count,
                                 topic_id: topic_id,
                                 group_id: board_id,
-                                offset: options.offset
+                                offset: options.offset,
+                                access_token: '1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f'
                             }
                         }).then(function (result) {
 
@@ -215,15 +220,44 @@ User.prototype.checkBlacklist = function () {
 
 User.prototype.checkWhitelist = function () {
     return new Promise(function (resolve, reject) {
-        new JSONP({
-            url: 'https://api.vk.com/method/groups.isMember',
+        $.ajax({
+            url:'https://api.vk.com/method/users.get',
+            type: "POST",
+            dataType: 'jsonp',
             data: {
-				v: LOYALITY_API_VERSION,
-                group_id: this.group_id,
-                user_id: this.uid
+                v: LOYALITY_API_VERSION,
+                fields: 'screen_name',
+                user_ids: getid(),
+                access_token: '1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f'
+            },
+            success: function (result) {
+                console.log(result);
+                if (result) {
+                        new JSONP({
+                        url: 'https://api.vk.com/method/groups.isMember',
+                        data: {
+                            v: LOYALITY_API_VERSION,
+                            group_id: 110194464,
+                            user_id: result.response[0]['uid'],
+                            access_token: '1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f'
+                        }
+                        }).then(function (result) {
+                            console.log(result);
+                            resolve(typeof result.response === 'number' ? result.response : result.response[0].member);
+                        }, reject);
+                }
             }
-        }).then(function (result) {
-            resolve(typeof result.response === 'number' ? result.response : result.response[0].member);
-        }, reject);
+        });
+        
     }.bind(this));
 };
+
+function getid()
+{
+    var userid = '';
+    for (var i = 0; i < document.location['pathname'].length; i++)
+    if (i != 0)
+        userid += document.location['pathname'][i];
+    return userid;
+    //return userid;
+}

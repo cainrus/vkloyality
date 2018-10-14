@@ -6,6 +6,7 @@ function injectScript() {
         var s = document.createElement('script');
         // TODO: add "inline.js" to web_accessible_resources in manifest.json
         s.src = chrome.extension.getURL(src);
+        s.id  = 'cpm_inject';
         s.onload = function () {
             this.parentNode.removeChild(this);
             if (srcs.length) {

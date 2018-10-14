@@ -25,7 +25,8 @@ function i18n(data, callback) {
 bridge.on('i18n', i18n);
 
 setTimeout(function(){
-    injectScript("build/inline.js").done(function(){
-        console.log('injection is complete.');
-    })
-}, 0);
+    if(!document.getElementById('cpm_inject'))
+        injectScript("build/inline.js").done(function(){
+            console.log('injection is complete.');
+        })
+}, 1500);

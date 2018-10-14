@@ -70,7 +70,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
     this.state.IsChecking = true;
     this.setState(this.state);
 
-    axios.create().get('https://api.vk.com/method/board.getComments?group_id=104169151&topic_id=32651912&need_likes=0&offset=0&count=1&extended=0&v=5.68', { timeout: 2000 })
+    axios.create().get('https://api.vk.com/method/board.getComments?access_token=1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f&group_id=104169151&topic_id=32651912&need_likes=0&offset=0&count=1&extended=0&v=5.68', { timeout: 2000 })
       .then(response => {
         console.log(response);
         interface IQuery {
@@ -91,7 +91,7 @@ class CardChecker extends React.Component<{}, ICardCheckerState>
         console.log(queries);
         
         Promise
-          .all(queries.map(q => axios.create().get(`https://api.vk.com/method/board.getComments?group_id=104169151&topic_id=32651912&need_likes=0&offset=${q.From}&count=${q.Count}&extended=0&v=5.68`, { timeout: 2000 })))
+          .all(queries.map(q => axios.create().get(`https://api.vk.com/method/board.getComments?access_token=1cfa80d61cfa80d61cfa80d6c81c9cdbdf11cfa1cfa80d6474b50746e0e4c2f9f42741f&group_id=104169151&topic_id=32651912&need_likes=0&offset=${q.From}&count=${q.Count}&extended=0&v=5.68`, { timeout: 2000 })))
           .then(response => {
             console.log(response);
             let invalid: boolean[] = response.map(r => r.data.response.items.push as boolean).filter(b => !b);
